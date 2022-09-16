@@ -4,20 +4,33 @@ import Button from "@material-ui/core/Button";
 
 //renaming prop for use in the component
 const MessageBox = (props) => {
-  const [message, setMessage] = useState("");
+  const [initialMessage] = useState({
+    sender: '',
+    avatar: '',
+    body: {
+      text: '',
+      attachment: ''
+    }
+  })
+  const [message, setMessage] = useState(initialMessage);
   const messageRef = useRef("");
 
   const sendMessageClick = () =>{
     if(messageRef.current.value === ""){
       return false;
     }
-    const messageObject = {
-      user_name: props.userData.currentUserData.user_name,
-      user_avatar: props.userData.currentUserData.user_avatar,
-      message: messageRef.current.value
-    }
-    props.onSendMessage(messageObject);
-    setMessage("");
+    props.onSendMessage(message);
+    setMessage(initialMessage);
+  }
+  const handleMessageChange = (e) => {
+    setMessage({
+      sender: localStorage.getItem('user')??'anonymous',
+      avatar: '',
+      body: {
+        text: messageRef.current.value,
+        attachment: ''
+      }
+    })
   }
 
   return (
@@ -28,9 +41,9 @@ const MessageBox = (props) => {
         margin="normal"
         multiline
         fullWidth
-        rows="4"
+        minRows="4"
         inputRef={messageRef}
-        onChange={event => setMessage(event.target.value)}
+        onChange={handleMessageChange}
         onKeyDown={event => {
           if(event.key === "Enter"){
             //prevents enter from being pressed
@@ -38,7 +51,7 @@ const MessageBox = (props) => {
             sendMessageClick();
           }
         }}
-        value={message}
+        value={message.body.text}
       />
       <Button
         variant="contained"
