@@ -1,11 +1,12 @@
 import express from "express";
 import message from "../controllers/message.controller.js";
+import auth from '../auth/verify'
 const router = express.Router();
 
 router
-  .get("/", message.getAllMessages)
-  .post("/", message.createMessage)
-  .get("/:id", message.getOneMessage)
-  .delete("/:id", message.deleteOneMessage);
+  .get("/", auth, message.getAllMessages)
+  .post("/", auth, message.createMessage)
+  .get("/:id", auth, message.getOneMessage)
+  .delete("/:id", auth, message.deleteOneMessage);
 
 export default router;
