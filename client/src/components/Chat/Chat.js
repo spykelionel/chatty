@@ -18,6 +18,7 @@ const Chat = (currentUserData) => {
           sendMessage(message);
         }}
       />
+      <button onClick={()=>{localStorage.removeItem("user");location.reload()}}>Logout</button>
     </div>
   );
 };
