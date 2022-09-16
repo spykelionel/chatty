@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Real time chat app 
 Example of chat web application using Socket.IO with the MERN stack
 Client in React, Server in Node.js/Express
@@ -36,3 +37,7 @@ Go to client folder and run in local development
 -----
 
     $ yarn watch
+=======
+# chatty
+A simple real time messaging app build using socket-io
+>>>>>>> 823a6aff83be10c6f8765615b2f1dbd23d33c199
