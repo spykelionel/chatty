@@ -1,7 +1,8 @@
-import socketIO from "socket.io";
+import socketIO, {Server} from "socket.io";
 import express from "express";
 import cors from "cors";
 import morgan from "morgan";
+import http from 'http'
 
 import dotenv from "dotenv";
 dotenv.config();
@@ -12,6 +13,7 @@ import Message from "./models/Message.js";
 import userRouter from "./routes/user.routes.js";
 import messageRouter from "./routes/message.routes.js";
 import roomRouter from './routes/room.routes.js'
+import message from "./controllers/message.controller";
 
 const io = socketIO(process.env.SOCKET_PORT, {
   cors: {
@@ -20,12 +22,20 @@ const io = socketIO(process.env.SOCKET_PORT, {
 });
 const app = express();
 
+const server = http.createServer(app)
+
+// const socketio = new Server(server)
+
+// global.io = socketio.listen(server)
+
+
+
 io.on("connection", (socket) => {
   console.log("Connection established");
 
   getMostRecentMessages()
     .then((results) => {
-      socket.emit("mostRecentMessages", results.reverse());
+      socket.emit("mostRecentMessages", [...results.reverse()]);
     })
     .catch((error) => {
       socket.emit("mostRecentMessages", []);
@@ -33,23 +43,18 @@ io.on("connection", (socket) => {
 
   socket.on("newChatMessage", (data) => {
     //send event to every single connected socket
-    const msgData = {
-      sender: {
-        user_name: data.user_name,
-        user_avatar: data.user_avatar,
-      },
-      message_text: data.message,
-    };
+    console.log(data)
     try {
-      const message = new Message(msgData);
+      const message = new Message(data);
       message
         .save()
-        .then(() => {
-          io.emit("newChatMessage", msgData);
+        .then((res) => {
+          console.log(res)
+          io.emit("newChatMessage", res);
         })
-        .catch((error) => console.log("error: " + error));
+        .catch((error) => console.log("error:", error));
     } catch (e) {
-      console.log("error: " + e);
+      console.log("error:", e);
     }
   });
   socket.on("disconnect", () => {
@@ -62,14 +67,14 @@ io.on("connection", (socket) => {
  * @returns {Promise<Model[]>}
  */
 async function getMostRecentMessages() {
-  return await Message.find().sort({ _id: -1 }).limit(10);
+  return await message.getAllMessages()
 }
 
 //sending json data
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors({ origin: "*" }));
+app.use(cors({ origin: true}));
 app.use("/api/account", userRouter);
 app.use("/api/message", messageRouter);
 app.use("/api/room", roomRouter);
@@ -90,7 +95,7 @@ const initApp = async () => {
   try {
     await mongoConnect();
     console.log("DB connection established");
-    app.listen(process.env.HTTP_PORT, () =>
+    server.listen(process.env.HTTP_PORT, () =>
       console.log(
         `HTTP Server listening on ${process.env.HTTP_PORT}`
       )
