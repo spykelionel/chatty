@@ -29,12 +29,21 @@ async function getOneMessage(req, res) {
 }
 
 async function createMessage(req, res) {
+  const {sender, body} = req.body
   try {
     console.log("Init create Message");
 
-    User.findOne({ name: req.body.sender.name })
-      .then(async (result) => {
-        return res.status(200).json({result})
+    User.findOne({ _id: sender })
+      .then(async (user) => {
+        const message = new Message({
+          sender: user,
+          body
+        })
+        message.save()
+        .then(saved=> {
+          return res.status(201).json(saved)
+        })
+        // return res.status(200).json(sender)
       })
       .catch((err) => console.error(err));
   } catch (error) {
