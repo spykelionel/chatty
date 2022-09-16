@@ -4,14 +4,14 @@ import User from '../models/User.js'
 
 export default async function login(req, res){
     try {
-       const client =  await User.findOne({ name: req.body.name})
+       const client =  User.findOne({ name: req.body.name})
        client.then(user=>{
             console.log(user)
             if(user){
                 // compare passwords
                 bcrypt.compare(req.body.password, user.password, (error, success)=> {
                     if(!success){
-                        return res.status(501).json({...error, message: "Error authenticating user"})
+                        return res.status(501).json({status:501, from: "Server 2", message: "Error authenticating user"})
                     }
                     const token = jwt.sign({
                     active_user: user.name,
@@ -33,7 +33,8 @@ export default async function login(req, res){
 
        })
     } catch (error) {
-       return res.status(501).json({...error, message: "Error authenticating user"})
+        console.log(error)
+       return res.status(501).json({status:501, from: "Server n", message: "Error authenticating user"})
     }
 }
 
