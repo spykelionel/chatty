@@ -9,7 +9,12 @@ const roomSchema = new mongoose.Schema(
     description:  {
         type: String,
         default: '',
-      },
+    },
+    users: {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: "User",
+      default: new mongoose.Types.ObjectId("63240aced4dc40450d62c486") //super admin
+    }
   },
   { timestamps: true }
 );
