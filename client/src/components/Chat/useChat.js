@@ -4,57 +4,44 @@ import { io } from "socket.io-client";
 const useChat = () => {
   const socketRef = useRef();
   const [messages, setMessages] = useState([]);
+  const gotoLastMessageRef = useRef(null);
 
-  //when component mounts and changes
   useEffect(() => {
+    const url = "http://localhost:5002/api/message";
+
+    const fetchMessages = async (url) => {
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        console.log(data);
+        setMessages((prv) => [...prv, ...data]);
+      } catch (error) {
+        console.log("error", error);
+      }
+    };
+
     socketRef.current = io("http://localhost:5001");
 
-    socketRef.current.on(
-      "mostRecentMessages",
-      (mostRecentMessages) => {
-        //on start, set as messages the mostRecentMessages
-        //in case the server restarts, we want to replace the current messages
-        //with those from database
-        //not add more
-        // setMessages((_messages) => [...mostRecentMessages]);
-        setMessages([...mostRecentMessages])
-      }
-    );
+    // socketRef.current.on(
+    //   "mostRecentMessages",
+    //   (mostRecentMessages) => {
+    //     // setMessages([...mostRecentMessages]);
+    //   }
+    // );
 
-    socketRef.current.on(
-      "newChatMessage",
-      ({ sender, message_text }) => {
-        //append message to the end of array, after using spread operator
-        setMessages((messages) => [
-          ...messages,
-          {
-            user_name: sender.user_name,
-            user_avatar: sender.user_avatar,
-            message_text: message_text,
-          },
-        ]);
-
-        //this will not work
-        //useeffect runs once, when the component first loads
-        //acts as closure that has access to messages (parent scope)
-        //when it first runs, messages is empty array
-        //when you add new messages to the messages array, it is no longer empty
-        //and the array is changed (not mutated, new array)
-        //with this way you're no longer able to access the current value of messages here
-        //you would have access only to the first value of messages (empty array)
-        //and means you won't be able to append more messages
-        //so instead we use the above, that's we use a callback that will get the latest value of messages
-        //and then appends the latest data
-        //setMessages([...messages, message])
-      }
-    );
-
+    socketRef.current.on("newChatMessage", (message) => {
+      console.log(message);
+      setMessages((messages) => [...messages, message]);
+    });
+    fetchMessages(url);
+    console.log("MSGS::::", messages);
     return () => {
       socketRef.current.disconnect();
     };
   }, []);
-
-  //message is part of an object
+  useEffect(() => {
+    // gotoLastMessageRef.current.scrollIntoView({ behavior: "auto" });
+}, []);
   const sendMessage = (message) => {
     socketRef.current.emit("newChatMessage", message);
   };
