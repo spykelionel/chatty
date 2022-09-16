@@ -7,10 +7,10 @@ const userSchema = new mongoose.Schema(
       required: true,
     },
     user_avatar: String,
-    rooms: {
-      type: String,
-      required: true,
-    },
+    rooms: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Room",
+    }],
   },
   { timestamps: true }
 );
