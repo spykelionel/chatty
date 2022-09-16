@@ -10,7 +10,7 @@ async function getAllRooms(req, res) {
   } catch (error) {
     return res
       .send(501)
-      .json({ mrssage: "Server is Down" });
+      .json({ message: "Server is Down" });
   }
 }
 

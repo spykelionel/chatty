@@ -7,9 +7,11 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import mongoConnect from "./config/mongo";
-import Message from "./models/message";
+import Message from "./models/Message.js";
 
 import userRouter from "./routes/user.routes.js";
+import messageRouter from "./routes/message.routes.js";
+import roomRouter from './routes/room.routes.js'
 
 const io = socketIO(process.env.SOCKET_PORT, {
   cors: {
@@ -69,8 +71,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({ origin: "*" }));
 app.use("/api/account", userRouter);
+app.use("/api/message", messageRouter);
+app.use("/api/room", roomRouter);
 
-app.use('', (req, res)=> {
+app.use((req, res)=> {
   res.status(404).json({
     message: "Endpoint Not found",
     status_code: 404
