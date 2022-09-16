@@ -7,9 +7,15 @@ const messageSchema = new mongoose.Schema(
         ref: "User",
         required: true,
       },
-    text: {
-      type: String,
-      required: true,
+    body: {
+      text: {
+        type: String,
+        required: true,
+      },
+      attachment: {
+        type: [String],
+        default: "",
+      }
     },
   },
   { timestamps: true }
