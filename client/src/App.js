@@ -5,7 +5,7 @@ import LoginForm from "./components/Login/LoginForm/LoginForm";
 import "./App.css"
 
 const App = () =>{
-  const [userData, setUserData] = useState(null);
+  const [userData, setUserData] = useState(localStorage.getItem('user')??null);
 
   if(userData === null){
     return (
