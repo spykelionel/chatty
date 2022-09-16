@@ -11,6 +11,9 @@ dist
 #environmental variables
 .env
 
+# Uploads
+uploads/
+
 # Extra deps
 # Logs
 logs
