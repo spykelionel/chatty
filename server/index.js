@@ -1,14 +1,15 @@
 import socketIO from "socket.io";
 import express from "express";
-import multer from "multer";
 import cors from "cors";
+import morgan from "morgan";
 
 import dotenv from "dotenv";
 dotenv.config();
 
 import mongoConnect from "./config/mongo";
 import Message from "./models/message";
-import fileUploader from "./controllers/fileUploader";
+
+import userRouter from "./routes/user.routes.js";
 
 const io = socketIO(process.env.SOCKET_PORT, {
   cors: {
@@ -36,7 +37,7 @@ io.on("connection", (socket) => {
         user_avatar: data.user_avatar,
       },
       message_text: data.message,
-    }
+    };
     try {
       const message = new Message(msgData);
       message
@@ -62,37 +63,26 @@ async function getMostRecentMessages() {
   return await Message.find().sort({ _id: -1 }).limit(10);
 }
 
-// app.use((req, res, next) => {
-//   //allow access from every, elminate CORS
-//   res.setHeader('Access-Control-Allow-Origin','*');
-//   res.removeHeader('x-powered-by');
-//   //set the allowed HTTP methods to be requested
-//   res.setHeader('Access-Control-Allow-Methods','POST');
-//   //headers clients can use in their requests
-//   res.setHeader('Access-Control-Allow-Headers','Content-Type');
-//   //allow request to continue and be handled by routes
-//   next();
-// });
-
 //sending json data
+app.use(morgan("dev"));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cors({ origin: "*" }));
+app.use("/api/account", userRouter);
 
-//handle http request for username and image for upload
-const storage = multer.memoryStorage();
-const upload = multer({ storage });
-
-app.post(
-  "/api/upload",
-  upload.single("avatar"),
-  fileUploader
-);
+app.use('', (req, res)=> {
+  res.status(404).json({
+    message: "Endpoint Not found",
+    status_code: 404
+  })
+})
 
 /**
  *
  * @returns {Promise<void>}
  */
 const initApp = async () => {
+  console.clear();
   try {
     await mongoConnect();
     console.log("DB connection established");
