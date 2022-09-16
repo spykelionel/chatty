@@ -1,8 +1,6 @@
 import cloudinary from "cloudinary";
-// import dotenv from "dotenv";
-// dotenv.config();
 
-const uploadImage = (req, res) => {
+const uploadImage = (req, res, next) => {
   if(!req.file){
     res.status(204);
   }else{
@@ -15,12 +13,14 @@ const uploadImage = (req, res) => {
 
       cloudinary.uploader.upload_stream((result) => {
         console.log(result)
-        return res.status(201).json({user_avatar_url: result.secure_url});
+        return res.status(201).json({user_avatar: result.secure_url});
       }).end(req.file.buffer);
     }catch (e) {
+      console.log(`ERROR::::: ${e}`)
         res.status(500).json({status:e});
     }
   }
+  next("Expected")
 };
 
 export default uploadImage;
