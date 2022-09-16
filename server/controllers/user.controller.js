@@ -67,7 +67,8 @@ async function createUser(req, res) {
                 return res.status(201).send(result);
               })
               .catch((err) => {
-                return res.status(501).send(err);
+                console.log(err)
+                return res.status(501).send({...err, state: "Caught here...."});
               });
           } catch (error) {
             console.log("CATCH_BLOCK",error);
