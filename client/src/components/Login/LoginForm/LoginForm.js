@@ -1,49 +1,48 @@
 import React, { useRef, useState } from "react";
-import { TextField, Fab, Button } from "@material-ui/core";
-import AddIcon from "@material-ui/icons/Add";
+import { TextField, Button } from "@material-ui/core";
 import Loader from "react-loader-spinner";
 import axios from "axios";
 
 const LoginForm = ({ setUserDataForChat }) => {
   const [loading, setLoading] = useState(false);
   const userNameInput = useRef("");
-  const imageInput = useRef("");
 
   const enterChatClick = () => {
     setUserName(
-      userNameInput.current.value,
-      imageInput.current.files[0]
+      userNameInput.current.value
     );
   };
 
-  const sendData = async (options) => {
-    // console.log(process.env.BASE_URL)
-    return await axios.post(
-      `http://localhost:5002/api/account/`,
-      options
+  const sendData = async (name) => {
+    return await fetch(`http://localhost:5002/api/account/`,{
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ name })
+    }
     );
   };
 
-  const setUserName = async (userName, imageFile) => {
+  const setUserName = async (userName) => {
     if (userName === "") {
       return false;
     }
-    if (imageFile === undefined) {
-      setUserDataForChat({
-        user_name: userName,
-      });
-    } else {
       setLoading(true);
-      const data = new FormData();
-      data.append("avatar", imageFile);
       try {
-        await sendData(data)
+        await sendData(userNameInput.current.value)
+          .then(res=>res.json())
           .then((response) => {
             console.log(response);
-            setUserDataForChat({
-              user_name: userName,
-              user_avatar: response.data.user_avatar,
-            });
+           if(response.status_code == 409){
+            alert(response.message)
+            return
+           }
+           localStorage.setItem('user', response.name)
+           setUserDataForChat({
+            name: response.name,
+          });
+
           })
           .catch((error) => {
             alert(error);
@@ -52,8 +51,7 @@ const LoginForm = ({ setUserDataForChat }) => {
           .finally(() => setLoading(false));
       } catch (e) {
         throw new Error(e.toString());
-      }
-    }
+        }
   };
 
   return loading ? (
@@ -70,39 +68,17 @@ const LoginForm = ({ setUserDataForChat }) => {
         label="Enter Username"
         margin="normal"
         fullWidth
-        rows="1"
+        minRows="1"
         inputRef={userNameInput}
         onKeyDown={(event) => {
           if (event.key === "Enter") {
             event.preventDefault();
             setUserName(
               event.target.value,
-              imageInput.current.files[0]
             );
           }
         }}
       />
-      <label>
-        <input
-          style={{ display: "none" }}
-          id="upload-avatar"
-          name="upload-avatar"
-          ref={imageInput}
-          type="file"
-          accept="image/x-png,image/gif,image/jpeg"
-        />
-        <Fab
-          color="secondary"
-          size="small"
-          component="span"
-          aria-label="add"
-          variant="extended"
-        >
-          <AddIcon /> Upload avatar
-        </Fab>
-        <br />
-        <br />
-      </label>
       <Button
         variant="contained"
         color="primary"
