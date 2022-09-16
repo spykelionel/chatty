@@ -9,15 +9,16 @@ import Typography from "@material-ui/core/Typography";
 
 
 const Messages = ({messages}) =>{
+  const current = localStorage.getItem('user')
   return (
     <List>
       {messages.flatMap((message, index) => [(
         <ListItem alignItems="flex-start" key={index}>
           <ListItemAvatar>
-            <Avatar alt="Avatar alt text" src={message.user_avatar} />
+            <Avatar alt="Avatar alt text" src={message.avatar} />
           </ListItemAvatar>
           <ListItemText
-            primary={message.user_name}
+            primary={message.sender}
             secondary={
               <Fragment>
                 <Typography
@@ -25,7 +26,7 @@ const Messages = ({messages}) =>{
                   variant="body2"
                   color="textPrimary"
                 >
-                  {message.message_text}
+                  <span className={(message.sender==current)&&"current"||''}>{message?.body?.text??''}</span>
                 </Typography>
               </Fragment>
             }
