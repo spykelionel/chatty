@@ -6,7 +6,11 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    user_avatar: String,
+    password: {
+      type: String,
+      required: true
+    },
+    avatar: String,
     rooms: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Room",

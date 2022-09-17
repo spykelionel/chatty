@@ -2,23 +2,46 @@ import React from "react";
 import MessageBox from "./MessageBox/MessageBox";
 import Messages from "./Messages/Messages";
 import useChat from "./useChat";
+import { useNavigate } from "react-router-dom";
 
 const Chat = (currentUserData) => {
-  //useChat calls to our custom hook
-  //it returns an object with messages and sending a message
-  const {messages, sendMessage} = useChat();
+  const navigate = useNavigate();
+  const { messages, sendMessage } = useChat();
+  const user = localStorage.getItem("user");
+  if (!user) {
+    navigate("/login");
+  }
   return (
-    <div>
-      <Messages
-        messages={messages}
-      />
-      <MessageBox
-        userData={currentUserData}
-        onSendMessage={message => {
-          sendMessage(message);
-        }}
-      />
-      <button onClick={()=>{localStorage.removeItem("user");location.reload()}}>Logout</button>
+    <div className="flex chat">
+      <div className="bg-green">{"chatty"}</div>
+      <div className="messages">
+        <div className="p-2 has-background-light">
+          <h1 className="title has-text-centered has-text-success">
+            Chatty
+          </h1>
+          <h2 className="subtitle has-text-centered">
+            Public Room
+          </h2>
+        </div>
+        <Messages messages={messages} />
+        <MessageBox
+          userData={currentUserData}
+          onSendMessage={(message) => {
+            sendMessage(message);
+          }}
+        />
+        <div className="control self-center">
+          <button
+            className="button is-danger"
+            onClick={() => {
+              localStorage.removeItem("token");
+              navigate("/login");
+            }}
+          >
+            Logout
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

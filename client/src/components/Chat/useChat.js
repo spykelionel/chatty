@@ -5,29 +5,30 @@ const useChat = () => {
   const socketRef = useRef();
   const [messages, setMessages] = useState([]);
   const gotoLastMessageRef = useRef(null);
+  const storage = window.localStorage
 
   useEffect(() => {
     const url = "http://localhost:5002/api/message";
 
     const fetchMessages = async (url) => {
+      const user = storage.getItem('user')
+      const token = storage.getItem('token')
       try {
-        const response = await fetch(url);
+        const response = await fetch(url, {
+          headers: {
+            authorization: `Bearer ${token}`,
+            "Content-Type": "application/json"
+          }
+        });
         const data = await response.json();
         console.log(data);
-        setMessages((prv) => [...prv, ...data]);
+        setMessages(data);
       } catch (error) {
         console.log("error", error);
       }
     };
 
     socketRef.current = io("http://localhost:5001");
-
-    // socketRef.current.on(
-    //   "mostRecentMessages",
-    //   (mostRecentMessages) => {
-    //     // setMessages([...mostRecentMessages]);
-    //   }
-    // );
 
     socketRef.current.on("newChatMessage", (message) => {
       console.log(message);

@@ -1,4 +1,5 @@
 import multer from "multer";
+import bcrypt from 'bcrypt'
 import User from "../models/User.js";
 // import fileUploader from "./fileUploader.js";
 
@@ -26,6 +27,7 @@ async function getAllUsers(req, res) {
   try {
     await User.find({})
       .lean()
+      .select("_id name rooms avatar createdAt")
       .then((result) => res.status(200).send(result))
       .catch((err) => res.status(503).send(err));
   } catch (error) {
@@ -39,6 +41,7 @@ async function getOneUser(req, res) {
   try {
     await User.findOne({ _id: req.params.id })
       .lean()
+      .select("_id name rooms avatar createdAt")
       .then((result) => res.status(200).send(result))
       .catch((err) => res.status(503).send(err));
   } catch (error) {
@@ -55,21 +58,33 @@ async function createUser(req, res) {
       .then(async (result) => {
         if (!result) {
           try {
-            console.log("EEEEEEEEE.....FILE")
-            const user = new User({
-              ...req.body,
-              avatar_url: req.file?.path ?? "",
-            });
-            console.log("creating user");
-            await user
-              .save()
-              .then((result) => {
-                return res.status(201).send(result);
+            const salt = 10;
+            bcrypt.hash(req.body.password, salt)
+              .then( async (password)=>{
+                const user = new User({
+                  ...req.body,
+                  password,
+                  avatar_url: req.file?.path ?? "",
+                });
+                console.log("creating user.....");
+                await user
+                  .save()
+                  .then((result) => {
+                    return res.status(201).send(result);
+                  })
+                  .catch((err) => {
+                    console.log(err)
+                    return res.status(501).send({...err, state: "Caught here...."});
+                  });
               })
-              .catch((err) => {
-                console.log(err)
-                return res.status(501).send({...err, state: "Caught here...."});
-              });
+              .catch(hashError=>{
+                console.log(hashError)
+                return res.status(501).json({
+                  message: "Could not hash this password",
+                  status: 501
+                })
+              })
+            
           } catch (error) {
             console.log("CATCH_BLOCK",error);
           }
@@ -101,7 +116,6 @@ async function deleteOneUser(req, res) {
 }
 
 const uploadAvatar = uploads.single("user_avatar");
-
 
 const user = {
   getAllUsers,
