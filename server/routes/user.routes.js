@@ -6,7 +6,7 @@ import login from "../auth/auth.js";
 const router = express.Router();
 
 router
-  .get("/login", login)
+  .post("/login", login)
   .post("/", user.createUser)
   .post("/avatar", user.uploadAvatar, uploadImage)
   .get("/", auth, user.getAllUsers)
