@@ -2,11 +2,15 @@ import React from "react";
 import MessageBox from "./MessageBox/MessageBox";
 import Messages from "./Messages/Messages";
 import useChat from "./useChat";
+import {useNavigate} from 'react-router-dom'
 
 const Chat = (currentUserData) => {
-  //useChat calls to our custom hook
-  //it returns an object with messages and sending a message
+  const navigate = useNavigate()
   const {messages, sendMessage} = useChat();
+  const user = localStorage.getItem('user')
+  if(!user){
+    navigate('/login')
+  }
   return (
     <div>
       <Messages
@@ -18,7 +22,7 @@ const Chat = (currentUserData) => {
           sendMessage(message);
         }}
       />
-      <button onClick={()=>{localStorage.removeItem("user");location.reload()}}>Logout</button>
+      <button onClick={()=>{localStorage.removeItem("token");navigate('/login')}}>Logout</button>
     </div>
   );
 };
