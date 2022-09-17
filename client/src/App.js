@@ -1,19 +1,22 @@
 import React, {useState} from "react";
 import Chat from "/components/Chat/Chat"
-import LoginForm from "./components/Login/LoginForm/LoginForm";
+import LoginForm from "./components/Login/LoginForm";
+import {Routes, Route} from 'react-router-dom'
 
 import "./App.css"
+import Signup from "./components/Signup";
 
 const App = () =>{
   const [userData, setUserData] = useState(localStorage.getItem('user')??null);
-
-  if(userData === null){
+  
+  if(true){
     return (
       <div className="container">
-        <div className="container-title">Welcome to our Chat App</div>
-        <LoginForm
-          setUserDataForChat={setUserData}
-        />
+        <Routes>
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/login" element={<LoginForm setUserDataForChat={setUserData} />} />
+          <Route path="/" element={ <Chat currentUserData={userData} />} />
+        </Routes>
       </div>
     )
   }
