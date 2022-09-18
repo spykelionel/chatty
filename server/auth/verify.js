@@ -8,6 +8,6 @@ export default function(req, res, next){
         // next(req.userData)
         next()
     } catch (error) {
-        return res.status(501).json({...error,status:501, message: "Error verifying user"})
+        return res.status(401).json({...error,status:401, message: "Error verifying user"})
     }
 }
