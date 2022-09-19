@@ -165,7 +165,7 @@ main header h3 {
   margin-bottom: 5px;
 }
 #chat .message {
-  padding: 20px;
+  padding: 5px;
   color: #fff;
   line-height: 25px;
   max-width: 90%;
@@ -182,7 +182,7 @@ main header h3 {
 #chat .me .message {
   background-color: #6fbced;
 }
-#chat .triangle {
+/* #chat .triangle {
   width: 0;
   height: 0;
   border-style: solid;
@@ -191,11 +191,11 @@ main header h3 {
 #chat .you .triangle {
   border-color: transparent transparent #58b666 transparent;
   margin-left: 15px;
-}
-#chat .me .triangle {
+} */
+/* #chat .me .triangle {
   border-color: transparent transparent #6fbced transparent;
   margin-left: 375px;
-}
+} */
 
 main footer {
   height: 155px;
