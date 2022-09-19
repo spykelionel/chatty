@@ -5,13 +5,13 @@ import useRoom from './useRoom'
 function Rooms() {
     const {rooms} = useRoom()
   return (
-    <div className="bg-green">
+    <ul className="">
        {
         rooms.map((room, idx)=>(
-            <Room room={room} key={room.name}/>
+            <Room room={room} key={room._id}/>
         ))
        } 
-    </div>
+    </ul>
   )
 }
 
