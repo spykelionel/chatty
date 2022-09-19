@@ -68,6 +68,8 @@
   background: #242424;
   height: inherit;
   border-radius: 3px;
+  width: max-content;
+  padding: 5px;
 }
 
 .message-items {
