@@ -17,7 +17,7 @@ export default async function login(req, res){
                     active_user: user.name,
                     id: user._id
                     }, process.env.JWT_SECRET, {expiresIn: "1d"})
-                    return res.status(200).json({
+                    return res.status(201).json({
                         user,
                         token,
                         status:200,
