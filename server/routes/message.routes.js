@@ -4,7 +4,7 @@ import auth from '../auth/verify'
 const router = express.Router();
 
 router
-  .get("/", auth, message.getAllMessages)
+  .get("/:roomId", auth, message.getAllMessages)
   .post("/", auth, message.createMessage)
   .get("/:id", auth, message.getOneMessage)
   .delete("/:id", auth, message.deleteOneMessage);
