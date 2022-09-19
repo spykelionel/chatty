@@ -1,17 +1,15 @@
 import { useEffect, useState, useRef } from "react";
 import { io } from "socket.io-client";
 
-const useChat = () => {
+const useChat = (id) => {
   const socketRef = useRef();
   const [messages, setMessages] = useState([]);
-  const gotoLastMessageRef = useRef(null);
   const storage = window.localStorage
 
   useEffect(() => {
-    const url = "http://localhost:5002/api/message";
+    const url = `http://localhost:5002/api/message/${id}`;
 
     const fetchMessages = async (url) => {
-      const user = storage.getItem('user')
       const token = storage.getItem('token')
       try {
         const response = await fetch(url, {
@@ -39,12 +37,9 @@ const useChat = () => {
     return () => {
       socketRef.current.disconnect();
     };
-  }, []);
-  useEffect(() => {
-    // gotoLastMessageRef.current.scrollIntoView({ behavior: "auto" });
-}, []);
+  }, [id]);
   const sendMessage = (message) => {
-    socketRef.current.emit("newChatMessage", message);
+    socketRef.current.emit("newChatMessage", {...message, room: id});
   };
 
   return { messages, sendMessage };

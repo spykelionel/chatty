@@ -1,12 +1,12 @@
 import Message from "../models/Message.js";
 import User from "../models/User.js";
-import socketIO, {Server} from "socket.io";
+import socketIO from "socket.io";
 
-// const io = socketIO(process.env.SOCKET_PORT, {
-//   cors: {
-//     origin: "http://localhost:1234",
-//   },
-// });
+const io = socketIO(process.env.SOCKET_PORT, {
+  cors: {
+    origin: "http://localhost:1234",
+  },
+});
 
 // io.on("connection", (socket) => {
 //   console.log("Connection established");
@@ -56,24 +56,31 @@ import socketIO, {Server} from "socket.io";
 //     // } catch (e) {
 //     //   console.log("error: " + e);
 //     // }
-  
+
 //   });
 //   socket.on("disconnect", () => {
 //     console.log("connection disconnected");
 //   });
 // });
 
-
 async function getAllMessages(req, res) {
- 
+  const { roomId } = req.params;
+  console.log("RoomID:")
+  console.log(roomId)
+  
   try {
-    await Message.find({})
+    await Message.find({ room: roomId })
       .lean()
-      .then((result) => res.status(200).send(result))
-      .catch((err) => res.status(503).send(err));
+      .then((result) => {
+        // io.on("connection", _=>{
+        //   return result
+        // })
+        return res.status(200).send(result)
+      })
+      .catch((err) => res.status(501).send(err));
   } catch (error) {
     return res
-      .status(501)
+      .status(503)
       .send({ message: "Server is Down" });
   }
 }
@@ -98,25 +105,27 @@ async function createMessage(req, res) {
 
     User.findOne({ name: req.body.sender })
       .then(async (user) => {
-        if(user){
+        if (user) {
           const message = new Message({
             sender: user.name,
+            user,
             body: {
-              text: req.body.body.text
-            }
-          })
-          message.save()
-          .then(saved=> {
-            return res.status(201).json(saved)
-          })
-        }
-        else {
-          return res.status(404).json({message: "No user found"})
+              text: req.body.body.text,
+            },
+            room: req.body.room
+          });
+          message.save().then((saved) => {
+            return res.status(201).json(saved);
+          });
+        } else {
+          return res
+            .status(404)
+            .json({ message: "No user found" });
         }
       })
       .catch((err) => {
-        console.error(err)
-        res.status(503).send({...err})
+        console.error(err);
+        res.status(503).send({ ...err });
       });
   } catch (error) {
     return res
@@ -136,8 +145,6 @@ async function deleteOneMessage(req, res) {
       .json({ message: "Server is Down" });
   }
 }
-
-
 
 const message = {
   getAllMessages,

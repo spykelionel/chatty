@@ -14,7 +14,12 @@ const roomSchema = new mongoose.Schema(
       type: [mongoose.Schema.Types.ObjectId],
       ref: "User",
       default: new mongoose.Types.ObjectId("63240aced4dc40450d62c486") //super admin
-    }
+    }, 
+    messages: {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: "Message",
+    },
+    latestMessage:  Object
   },
   { timestamps: true }
 );

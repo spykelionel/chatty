@@ -6,6 +6,7 @@ const messageSchema = new mongoose.Schema(
         type: String,
         required: true,
       },
+    user: Object,
     body: {
       text: {
         type: String,
@@ -16,6 +17,11 @@ const messageSchema = new mongoose.Schema(
         default: "",
       }
     },
+    room: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Room",
+      required: true
+    }
   },
   { timestamps: true }
 );
