@@ -5,6 +5,10 @@ import useChat from "./useChat";
 import { useNavigate, useParams } from "react-router-dom";
 import Rooms from "./room/Rooms";
 import useRoom from "./room/useRoom";
+import SidebarChat from "./SidebarChat";
+import Message from "../Message";
+import { Avatar } from "@material-ui/core";
+import { Send } from "@material-ui/icons";
 
 const Chat = () => {
   const navigate = useNavigate();
@@ -20,37 +24,48 @@ const Chat = () => {
     },[])
   }
   return (
-    <div className="flex chat">
-      <div className="bg-green">
-      <Rooms />
-      </div>
-      <div className="messages">
-        <div className="p-2 has-background-light">
-          <h1 className="title has-text-centered has-text-success">
-            Chatty
-          </h1>
-          <h2 className="subtitle has-text-centered">
-            {room.name??"Public"}
-          </h2>
-        </div>
-        <Messages messages={messages} />
-        <MessageBox
-          onSendMessage={(message) => {
-            sendMessage(message);
-          }}
+    <div className="place-items-center">
+    <div id="container">
+    <aside>
+      <header>
+        <input type="text" placeholder="search" />
+      </header>
+    <Rooms />
+    </aside>
+    <main>
+      <header>
+        <img
+          src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1940306/chat_avatar_01.jpg"
+          alt=""
         />
-        <div className="control self-center">
-          <button
-            className="button is-danger"
-            onClick={() => {
-              localStorage.removeItem("token");
-              navigate("/login");
-            }}
-          >
-            Logout
-          </button>
+        <div>
+          <h2>{room.name}</h2>
+          <h3>{messages.length>1? `${messages.length} messages`: `${messages.length} message`}</h3>
         </div>
-      </div>
+        <img
+          src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1940306/ico_star.png"
+          alt=""
+        />
+      </header>
+      <ul id="chat">
+        {
+          messages.map((message, idx)=> <Message message={message} key={message._id} />)
+        }
+      </ul>
+      <footer>
+        <textarea placeholder="Type your message"></textarea>
+        <img
+          src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1940306/ico_picture.png"
+          alt=""
+        />
+        <img
+          src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1940306/ico_file.png"
+          alt=""
+        />
+        <Send />
+      </footer>
+    </main>
+  </div>
     </div>
   );
 };
