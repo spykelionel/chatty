@@ -14,6 +14,7 @@ import userRouter from "./routes/user.routes.js";
 import messageRouter from "./routes/message.routes.js";
 import roomRouter from './routes/room.routes.js'
 import message from "./controllers/message.controller";
+import room from "./controllers/room.controller";
 
 const io = socketIO(process.env.SOCKET_PORT, {
   cors: {
@@ -46,6 +47,9 @@ io.on("connection", (socket) => {
     console.log(data)
     try {
       const message = new Message(data);
+      const roomId = data.room;
+      // get the room and update.
+      room.
       message
         .save()
         .then((res) => {
