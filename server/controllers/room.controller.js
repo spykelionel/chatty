@@ -29,23 +29,34 @@ async function getOneRoom(req, res) {
 
 async function createRoom(req, res) {
   const {name, description, users} = req.body
-  try {
-    console.log("Init create Room");
-        const room = new Room({
-          name,
-          description,
-          users
-        })
-        room.save()
-        .then(saved=> {
-          return res.status(201).json(saved)
-        })
-      .catch((err) => console.error(err));
-  } catch (error) {
-    return res
-      .send(501)
-      .json({ message: "Server is Down" });
-  }
+  Room.exists({name}).
+  then(room=>{
+    if(!room){
+      try {
+        console.log("Init create Room");
+            const room = new Room({
+              name,
+              description,
+              users
+            })
+            room.save()
+            .then(saved=> {
+              return res.status(201).json(saved)
+            })
+          .catch((err) => console.error(err));
+      } catch (error) {
+        return res
+          .send(501)
+          .json({ message: "Server is Down" });
+      }
+    } else{
+      return res.status(409).json({
+        message: "Room already exists",
+        status: 409
+      })
+    }
+  })
+ 
 }
 
 async function deleteOneRoom(req, res) {
