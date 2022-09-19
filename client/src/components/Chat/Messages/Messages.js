@@ -1,6 +1,5 @@
 import React from "react";
-import { useParams } from "react-router-dom";
-import Message from "../../Message";
+import Message from "./Message";
 
 const Messages = ({ messages }) => {
   const gotoLastMessageRef = React.useRef(null);
@@ -12,8 +11,8 @@ const Messages = ({ messages }) => {
 
   return (
     <div className="p-max message-items">
-      {messages.map((message, index) => (
-        <Message message={message} key={index} />
+      {messages.map((message, _index) => (
+        <Message message={message} key={message._id} />
       ))}
       <div ref={gotoLastMessageRef}></div>
     </div>
