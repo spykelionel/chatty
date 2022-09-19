@@ -2,30 +2,40 @@ import React from "react";
 
 function Message({ message }) {
   const current = localStorage.getItem("user");
+  let date = new Date(message.createdAt);
+  let year = date.getFullYear();
+  let month = date.getMonth() + 1;
+  let dt = date.getDate();
+
+  if (dt < 10) {
+    dt = "0" + dt;
+  }
+  if (month < 10) {
+    month = "0" + month;
+  }
+
   return (
-    <div className={"content flex"}>
-      <div
-        className={
-          "grid " +
-          (message.sender == current
-            ? "current sender"
-            : " receiver")
-        }
+    <>
+      <li
+        className={message.sender == current ? "me" : "you"}
       >
-        {message.sender == current ? (
-          <></>
-        ) : (
-          <div className="flex">
-            <span className="sender-name">{message.sender}</span>
-          </div>
-        )}
-        <div className={"chat-message " + (message.sender == current
-            ? "chat-message-sender button is-info"
-            : "chat-message-receiver")}>
-          <span>{message?.body?.text ?? ""}</span>
+        <div className="entete">
+          <span
+            className={
+              "status " + message.sender == current
+                ? "blue"
+                : "green"
+            }
+          ></span>
+          <h2>{message.sender}</h2>
+          <h3>{` ${year}-${month}-${dt} `}</h3>
         </div>
-      </div>
-    </div>
+        <div className="triangle"></div>
+        <div className="message">
+          {message?.body?.text ?? ""}
+        </div>
+      </li>
+    </>
   );
 }
 
