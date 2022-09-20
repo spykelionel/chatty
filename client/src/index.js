@@ -3,6 +3,6 @@ import {render} from "react-dom";
 import App from "./App";
 import 'regenerator-runtime/runtime'
 import {BrowserRouter} from 'react-router-dom'
-import 'bulma/css/bulma.min.css';
+import './index.css'
 
 render(<BrowserRouter><App /></BrowserRouter>, document.querySelector('#app'));

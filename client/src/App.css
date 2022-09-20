@@ -7,72 +7,14 @@
   align-self: center;
 }
 
-.flex {
+/* sidebar chat specific */
+
+.d-flex {
   display: flex;
 }
-.sender {
-  float: right;
-  display: flex;
-  justify-content: end;
-  width: 100%;
+.space-between {
+  justify-content: space-between;
 }
-
-.block {
-  display: block;
-}
-.w-100 {
-  width: 100%;
-}
-
-.field {
-  width: 100%;
-  padding: 0 5rem;
-}
-.p-max {
-  padding: 0 1rem;
-}
-.chat-message {
-  color: #fff;
-  padding: 5px;
-  border-radius: 8px;
-}
-.chat-message-receiver {
-  background-color: #FF5733;
-}
-
-.messages {
-  background-color: #e0dad5;
-  border-radius: 10px;
-  grid-column: 3/11;
-}
-
-.send-btn {
-  width: fit-content;
-  height: fit-content;
-  align-self: center;
-}
-
-.msg-box {
-  padding: 0 .9rem;
-}
-
-.chat {
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  width: 100%;
-  justify-content: space-evenly;
-  margin: 5rem;
-}
-
-.bg-green {
-  background: #242424;
-  height: inherit;
-  border-radius: 3px;
-  width: max-content;
-  padding: 5px;
-}
-
-.message-items {
-  max-height: 60vh;
-  overflow-y: scroll;
+.justify-center {
+  align-items: center;
 }
