@@ -16,7 +16,7 @@ function Message({ message }) {
 
   return (
     <>
-      <li
+      <div
         className={message.sender == current ? "me" : "you"}
       >
         <div className="entete">
@@ -34,7 +34,7 @@ function Message({ message }) {
         <div className="message">
           {message?.body?.text ?? ""}
         </div>
-      </li>
+      </div>
     </>
   );
 }

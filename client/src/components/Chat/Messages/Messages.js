@@ -10,7 +10,7 @@ const Messages = ({ messages }) => {
   }, [messages]);
 
   return (
-    <div className="p-max message-items">
+    <div className="p-max message-items chat">
       {messages.map((message, _index) => (
         <Message message={message} key={message._id} />
       ))}

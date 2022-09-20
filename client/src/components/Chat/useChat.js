@@ -1,9 +1,11 @@
 import { useEffect, useState, useRef } from "react";
 import { io } from "socket.io-client";
+import { useNavigate } from "react-router-dom";
 
 const useChat = (id) => {
   const socketRef = useRef();
   const [messages, setMessages] = useState([]);
+  const navigate = useNavigate()
   const storage = window.localStorage
 
   useEffect(() => {
@@ -19,6 +21,9 @@ const useChat = (id) => {
           }
         });
         const data = await response.json();
+        if(data.status == 401){
+          navigate("/login")
+        }
         console.log(data);
         setMessages(data);
       } catch (error) {

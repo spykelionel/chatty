@@ -15,6 +15,12 @@ const Chat = () => {
   const {room} = useRoom(roomId)
   const { messages, sendMessage } = useChat(roomId);
   const user = localStorage.getItem("user");
+  const gotoLastMessageRef = React.useRef(null);
+  React.useEffect(() => {
+    gotoLastMessageRef.current.scrollIntoView({
+      behavior: "smooth",
+    });
+  }, [messages]);
   if (!user) {
     React.useEffect(()=>{
       navigate("/login");
@@ -73,6 +79,7 @@ const Chat = () => {
         {
           messages.map((message, idx)=> <Message message={message} key={message._id} />)
         }
+        <li ref={gotoLastMessageRef}></li>
       </ul>
      <MessageBox
           onSendMessage={(message) => {

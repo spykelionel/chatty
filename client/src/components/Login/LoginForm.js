@@ -2,9 +2,11 @@ import React, { useRef, useState } from "react";
 import { TextField, Button } from "@material-ui/core";
 import Loader from "react-loader-spinner";
 import { Link, useNavigate } from "react-router-dom";
+import useRoom from "../Chat/room/useRoom";
 
 const LoginForm = ({ setUserDataForChat }) => {
   const [loading, setLoading] = useState(false);
+  const { rooms } = useRoom()
   const userNameInputRef = useRef("");
   const passwordInputRef = useRef("");
   const navigate = useNavigate();
@@ -19,14 +21,18 @@ const LoginForm = ({ setUserDataForChat }) => {
     })
       .then((res) => res.json())
       .then((data) => {
-        const user = {
-          token: data.token,
-          user: data.user,
-        };
-        console.log(user);
-        storage.setItem("user", user.user.name);
-        storage.setItem("token", user.token);
-        navigate("/");
+        if(data.token){
+          const user = {
+            token: data.token,
+            user: data.user,
+          };
+          console.log(user);
+          storage.setItem("user", user.user.name);
+          storage.setItem("token", user.token);
+          navigate(`/room/${rooms[0]._id}`);
+        } else {
+          alert("Incorrect credentials")
+        }
       })
       .catch((err) => console.log(err));
   }

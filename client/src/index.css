@@ -149,7 +149,7 @@ main header h3 {
   border-top: 2px solid #fff;
   border-bottom: 2px solid #fff;
 }
-#chat li {
+#chat li, #chat .li {
   padding: 10px 30px;
 }
 #chat h2,
